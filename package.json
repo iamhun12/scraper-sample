@@ -1,0 +1,21 @@
+{
+  "name": "scraper-sample",
+  "version": "0.1.0",
+  "description": "Minimal sample of a CNPJ-based scraper pipeline with typed JSON I/O contracts.",
+  "main": "main.ts",
+  "scripts": {
+    "start": "tsx main.ts",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.2",
+    "prettier": "^3.4.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "puppeteer": "^24.28.0",
+    "zod": "^3.22.2"
+  }
+}
