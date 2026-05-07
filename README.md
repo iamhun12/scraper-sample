@@ -1,8 +1,9 @@
 # scraper-sample
 
-Minimal sample of a CNPJ-based scraping pipeline. Demonstrates a typed JSON
-in/out contract, Zod-validated parameters, and a pluggable scraper module
-loaded dynamically by an `id`.
+Minimal sample of a Brazilian-tax-ID-based scraping pipeline (CNPJ — the
+14-digit corporate tax identifier issued by Receita Federal). Demonstrates a
+typed JSON in/out contract, Zod-validated parameters, and a pluggable scraper
+module loaded dynamically by an `id`.
 
 This is a small extract of the architecture used in a larger production
 scraper farm — trimmed to focus on the core ideas and showcase two
@@ -24,19 +25,20 @@ file selects which scraper runs.
 
 ## Scrapers included
 
-| ID                  | Strategy   | Target                                                |
-| ------------------- | ---------- | ----------------------------------------------------- |
-| `RECEITA-FEDERAL`   | axios HTTP | BrasilAPI public CNPJ endpoint (no auth)              |
-| `SIMPLES-NACIONAL`  | puppeteer  | Renders `publica.cnpj.ws` and extracts page content   |
+| ID        | Strategy   | Target                                                          |
+| --------- | ---------- | --------------------------------------------------------------- |
+| `CADINGO` | puppeteer  | SEFAZ-GO CND portal: fills form, intercepts PDF, parses fields  |
+| `CNDAL`   | axios HTTP | SEFAZ-AL certificate API: posts JSON, parses returned PDF       |
 
 ## I/O contract
 
-**Input** (`request/parameters.json`):
+**Input** (`request/parameters.cadingo.json`):
 
 ```json
 {
-  "source": { "id": "RECEITA-FEDERAL" },
-  "cnpj": "29.736.089/0008-07"
+  "source": { "id": "CADINGO" },
+  "brazilianTaxId": "29736089000807",
+  "headless": false
 }
 ```
 
@@ -46,13 +48,15 @@ file selects which scraper runs.
 {
   "success": true,
   "data": {
-    "cnpj": "29.736.089/0008-07",
-    "scrapedAt": "2026-05-06T12:00:00.000Z",
-    "source": "RECEITA-FEDERAL",
+    "brazilianTaxId": "29.736.089/0008-07",
+    "scrapedAt": "2026-05-07T03:35:05.266Z",
+    "source": "CADINGO",
     "payload": {
-      "legalName": "...",
-      "registrationStatus": "ATIVA",
-      "openingDate": "2008-03-12"
+      "certificateType": "NEGATIVE",
+      "certificateCode": "202601063686",
+      "issuedAt": "2026-05-07T00:34:52.000Z",
+      "validUntil": "2026-06-06T00:34:52.000Z",
+      "file": { "content": "<base64 PDF>" }
     }
   },
   "errorCode": null,
@@ -69,8 +73,8 @@ On failure, `success` is `false`, `data` is `null`, and `errorCode` /
 
 ```bash
 npm install
-npm start                                       # uses request/parameters.json
-npm start -- -f parameters.simples.json         # runs the puppeteer scraper
+npm start -- -f parameters.cadingo.json   # SEFAZ-GO via puppeteer
+npm start -- -f parameters.cndal.json     # SEFAZ-AL via axios
 ```
 
 CLI flags:
@@ -96,11 +100,11 @@ src/
   common/
     errors/        ScraperError + typed subclasses (codes preserved)
     ports/         Scraper abstract base
-    types/         ScrapeResult, ScrapeData, status enums
-    utils/         CNPJ format/validate, IO paths, param loader, output writer, dynamic loader
+    types/         ScrapeResult, ScrapeData, CertificateData, status enums
+    utils/         brazilianTaxId format/validate, IO paths, param loader, output writer, dynamic loader, PDF text, dates, cookies
   scrapers/
-    RECEITA-FEDERAL/main.ts   (axios)
-    SIMPLES-NACIONAL/main.ts  (puppeteer)
+    CADINGO/main.ts   (puppeteer)
+    CNDAL/main.ts     (axios)
 request/
 result/
 ```

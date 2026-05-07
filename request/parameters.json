@@ -1,4 +1,5 @@
 {
-  "source": { "id": "RECEITA-FEDERAL" },
-  "brazilianTaxId": "29.736.089/0008-07"
+  "source": { "id": "CADINGO" },
+  "brazilianTaxId": "29736089000807",
+  "headless": false
 }
