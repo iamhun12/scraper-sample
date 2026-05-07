@@ -1,3 +1,15 @@
+
+
+https://github.com/user-attachments/assets/09be1f07-b805-494e-a21e-0dcf1f4525f9
+
+
+
+https://github.com/user-attachments/assets/3c66fc8f-24f7-4854-a395-bc8a8104420d
+
+
+
+https://github.com/user-attachments/assets/4c0a282e-4f1c-4c71-b3ec-7348ae2e4f5e
+
 # scraper-sample
 
 Minimal sample of a Brazilian-tax-ID-based scraping pipeline (CNPJ — the
