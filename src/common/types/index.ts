@@ -24,3 +24,19 @@ export type ScrapeResult<T = ScrapeData> = {
   status: ScrapeStatus;
   processingStatus: ProcessingStatus;
 };
+
+export type CertificateType =
+  | "NEGATIVE"
+  | "POSITIVE"
+  | "POSITIVE-WITH-NEGATIVE-EFFECTS";
+
+export type CertificateData = {
+  certificateType: CertificateType;
+  controlCode?: string;
+  certificateCode?: string;
+  issuedAt?: string;
+  validUntil?: string;
+  file?: {
+    content: string;
+  };
+};
