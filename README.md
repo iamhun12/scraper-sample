@@ -81,6 +81,30 @@ file selects which scraper runs.
 On failure, `success` is `false`, `data` is `null`, and `errorCode` /
 `errorMessage` describe the cause (validation, portal error, unknown).
 
+## Samples
+
+Live sample outputs and a recording live in [result/](result/):
+
+- [result/result.cadingo.json](result/result.cadingo.json) — SEFAZ-GO run (full base64 PDF included)
+- [result/result.cndal.json](result/result.cndal.json) — SEFAZ-AL run (full base64 PDF included)
+- [result/cadingo.mp4](result/cadingo.mp4) — screen recording of the puppeteer flow
+
+### CADINGO scraper recording
+
+<!--
+  TODO: replace the line below with the inline player.
+  How: open this README on github.com, click the pencil to edit, drag
+  result/cadingo.mp4 into the editor — GitHub uploads it to user-attachments
+  and inserts a <video src="https://github.com/user-attachments/assets/..."> tag.
+  Replace the [Watch recording] line with that snippet, then commit.
+-->
+
+[Watch recording (cadingo.mp4)](result/cadingo.mp4)
+
+The CADINGO scraper records its browser session to MP4 when `recordTo` is
+set in the input file. Recording uses Chrome DevTools `Page.startScreencast`
+piped to system `ffmpeg` (no extra runtime dependency beyond `ffmpeg`).
+
 ## Run
 
 ```bash
