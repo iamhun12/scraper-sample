@@ -57,7 +57,11 @@ export default class CndalScraper extends Scraper<Input> {
     }
 
     const api = this.makeApi(input.proxy ?? null);
-    const certificate = await this.fetchCertificate(api, taxId, input.source.validityDays);
+    const certificate = await this.fetchCertificate(
+      api,
+      taxId,
+      input.source.validityDays,
+    );
 
     return {
       brazilianTaxId: formatBrazilianTaxId(taxId),
@@ -115,10 +119,13 @@ export default class CndalScraper extends Scraper<Input> {
     taxId: string,
     validityDays: number,
   ): Promise<CertificateData> {
+    console.log("Going to initial page...");
+
     await api.get("/certidao/#/emitircertidao").catch(() => {
       throw new PortalUnavailableError("Failed to load CNDAL portal");
     });
 
+    console.log("Filling form...");
     const issued = await this.requestCertificate(api, taxId);
 
     if (!issued) {
@@ -128,6 +135,7 @@ export default class CndalScraper extends Scraper<Input> {
       };
     }
 
+    console.log("Parsing PDF...");
     return parseCertificatePdf(issued.conteudo);
   }
 
@@ -156,10 +164,7 @@ export default class CndalScraper extends Scraper<Input> {
     }
 
     if (errorMessage) {
-      throw new ScraperError(
-        "1500",
-        `Portal returned error: ${errorMessage}`,
-      );
+      throw new ScraperError("1500", `Portal returned error: ${errorMessage}`);
     }
 
     return response.data as IssueCertificate.SuccessResponse;
